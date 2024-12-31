@@ -9,6 +9,8 @@ import 'package:edigit/screens/affichage/accueil.dart';
 import 'package:dio/dio.dart';
 
 class UnsyncedPersonsPage extends StatefulWidget {
+  const UnsyncedPersonsPage({super.key});
+
   @override
   _UnsyncedPersonsPageState createState() => _UnsyncedPersonsPageState();
 }
@@ -126,12 +128,12 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
           "pdisresgenre": enfant['sexe'] ?? '',
           "pdisresln": enfant['lieunais'] ?? '',
           "pdisresdtn": enfant['datenaiss'] ?? '',
-          "pdisresqualite": enfant['qualite'] ?? '',
+          "pdisresqualite": enfant['relation'] ?? '',
           "pdisresnvul": enfant['vulenerabilite'] ?? '',
           "pdisresprof": enfant['profession'] ?? '',
           "mena_code": enfant['codeMenage'] ?? '',
           "u_ref": userId ?? 0,
-          "pdisresdatenr": enfant['date_crea'] ?? '',
+          "pdisresdatenr": enfant['date_inscri'] ?? '',
         });
 
         // Envoi de la requête
@@ -270,7 +272,7 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
           },
         ),
         title: const Text(
-          'Prét à envoyer',
+          'Prêt à envoyer',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -335,21 +337,6 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // subtitle: Text(
-                    //   'Lieu de naissance : ${person['lieunais']}',
-                    //   style: TextStyle(
-                    //     fontSize: 16,
-                    //     color: Colors.grey[600],
-                    //   ),
-                    // ),
-                    // trailing: Checkbox(
-                    //   value: _checkedItems[index],
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       _checkedItems[index] = value!;
-                    //     });
-                    //   },
-                    // ),
                   ),
                 );
               },
