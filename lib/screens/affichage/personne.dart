@@ -625,6 +625,15 @@ class _FormPersonneState extends State<FormPersonne> {
     try {
       List<Map<String, dynamic>> menage = await _dbHelper.getDernierMenage();
       int? codemenage = menage.first['localid'];
+      // List<Map<String, dynamic>> respo = await _dbHelper.getDernierPersonne();
+      // int? codeRespo = respo.first['localid'];
+      // int? codeRespoInc = (codeRespo ?? 0) + 1;
+      // String? sexe = "F";
+      // if (_selectedSexe == "Masculin") {
+      //   sexe = "M";
+      // }
+      // List<Map<String, dynamic>> user = await _dbHelper.getDernierUser();
+      // int? userId = user.first['userId'];
       await _dbHelper.insertPersonne({
         'nom': _citNomController.text,
         'postnom': _citPostNomController.text,
@@ -634,7 +643,6 @@ class _FormPersonneState extends State<FormPersonne> {
         'datenaiss': _citdatenaissController.text,
         'photo': _selectedImage?.path,
         'vulenerabilite': _selectedVulenerableId,
-        // 'codeMenage': _motifController.text,
         'relation': _selectedRelation,
         'profession': _selectedProfessionId,
         'codeMenage': codemenage,

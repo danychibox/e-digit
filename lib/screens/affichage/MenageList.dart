@@ -93,7 +93,7 @@ class _MenageListState extends State<MenageList> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Erreur: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text('Aucun enfant enregistré'));
+              return Center(child: Text('Aucune donnée offline'));
             } else {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

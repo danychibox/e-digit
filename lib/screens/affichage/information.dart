@@ -4,7 +4,7 @@ import 'package:edigit/screens/affichage/accueil.dart';
 import 'package:flutter/material.dart';
 import 'package:edigit/DatabaseHelper.dart';
 import 'package:edigit/screens/affichage/MenageList.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'dart:io';
@@ -400,72 +400,6 @@ class _FormInformationState extends State<FormInformation> {
     );
   }
 
-  Widget _buildDatePickerField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-    required BuildContext context,
-  }) {
-    return SizedBox(
-      width: 450,
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(
-              color: Colors.black, // Couleur de l'étiquette
-              fontSize: 16),
-          hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Colors.black,
-              width: 2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Colors.blue,
-              width: 2,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide(
-              color: Colors.black,
-              width: 1.5,
-            ),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          prefixIcon: Icon(Icons.calendar_view_day, color: Colors.black),
-        ),
-        readOnly: true,
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1900),
-            lastDate: DateTime(2100),
-          );
-          if (pickedDate != null) {
-            setState(() {
-              controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-            });
-          }
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Veuillez choisir une date';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
   Widget _buildCard({required String title, required Widget content}) {
     return Card(
       color: Color.fromARGB(
@@ -505,6 +439,9 @@ class _FormInformationState extends State<FormInformation> {
       int? codemenage = menage.first['localid'];
       List<Map<String, dynamic>> respo = await _dbHelper.getDernierPersonne();
       int? codeRespo = respo.first['localid'];
+      List<Map<String, dynamic>> mat = await _dbHelper.getDernierPersonneMat();
+      int? pdisresmat = mat.first['pdisresmat'];
+
       await _dbHelper.insertInfos({
         'provenance': _provenanceController.text,
         'nombreEnfant': _compoController.text,
@@ -513,6 +450,7 @@ class _FormInformationState extends State<FormInformation> {
         'motif': _selectedMotifId,
         'taillemen': _tailleController.text,
         'codeMenage': codemenage,
+        'pdisresmat': pdisresmat,
         'respo': codeRespo,
       });
 

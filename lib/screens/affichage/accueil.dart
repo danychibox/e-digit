@@ -11,8 +11,42 @@ import 'package:edigit/screens/affichage/enfantList1.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:edigit/screens/authentification/login.dart';
+import 'package:dio/dio.dart';
 
-class Accueil extends StatelessWidget {
+class Accueil extends StatefulWidget {
+  const Accueil({super.key});
+
+  @override
+  _AccueilState createState() => _AccueilState();
+}
+
+class _AccueilState extends State<Accueil> {
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  List<Map<String, dynamic>> count = [];
+  int? countnonsync;
+  int? countsync;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUnsyncedPersonneCount();
+    _loadsyncedPersonneCount();
+  }
+
+  Future<void> _loadUnsyncedPersonneCount() async {
+    count = await _dbHelper.countUnsyncedPersonne();
+    setState(() {
+      countnonsync = count.first['count'];
+    });
+  }
+
+  Future<void> _loadsyncedPersonneCount() async {
+    count = await _dbHelper.countSyncedPersonne();
+    setState(() {
+      countsync = count.first['count'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -27,9 +61,17 @@ class Accueil extends StatelessWidget {
               height: 40,
             ),
             SizedBox(width: 10),
-            Text('RECENSEMENT DE PDIS'),
+            Text('E-DIGIT'),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.upload),
+            onPressed: () async {
+              sendInfosOnline(context);
+            },
+          ),
+        ],
         automaticallyImplyLeading: true,
         backgroundColor: const Color.fromARGB(255, 77, 68, 206),
         foregroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -80,18 +122,6 @@ class Accueil extends StatelessWidget {
               title: Text('Synchroniser les utilisateurs'),
               onTap: () => syncUserFromApi(context),
             ),
-            // ListTile(
-            //   leading: Icon(Icons.settings_input_antenna),
-            //   title: Text('Statistiques'),
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => EnfantStatsPage(),
-            //       ),
-            //     );
-            //   },
-            // ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Quitter l\'application'),
@@ -110,6 +140,60 @@ class Accueil extends StatelessWidget {
             spacing: 20,
             runSpacing: 20,
             children: [
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.download,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 10), // Espacement entre l'icône et le texte
+                    Text(
+                      'Données offline $countnonsync',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.upload,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 10), // Espacement entre l'icône et le texte
+                    Text(
+                      'Données online $countsync',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               _buildSquareButton(
                 context,
                 'Ajouter',
@@ -140,36 +224,6 @@ class Accueil extends StatelessWidget {
                 screenWidth * 0.4,
                 screenHeight * 0.2,
               ),
-              // _buildSquareButton(
-              //   context,
-              //   'Origine',
-              //   () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => FormMenage(),
-              //       ),
-              //     );
-              //   },
-              //   Icons.list,
-              //   screenWidth * 0.4,
-              //   screenHeight * 0.2,
-              // ),
-              // _buildSquareButton(
-              //   context,
-              //   'Sites',
-              //   () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => FormSite(),
-              //       ),
-              //     );
-              //   },
-              //   Icons.home_max,
-              //   screenWidth * 0.4,
-              //   screenHeight * 0.2,
-              // ),
               _buildSquareButton(
                 context,
                 'Données en ligne',
@@ -207,8 +261,14 @@ class Accueil extends StatelessWidget {
     );
   }
 
-  Widget _buildSquareButton(BuildContext context, String text,
-      VoidCallback onPressed, IconData icon, double width, double height) {
+  Widget _buildSquareButton(
+    BuildContext context,
+    String text,
+    VoidCallback onPressed,
+    IconData icon,
+    double width,
+    double height,
+  ) {
     return SizedBox(
       width: width,
       height: height,
@@ -916,6 +976,69 @@ class Accueil extends StatelessWidget {
       );
 
       print('Erreur lors de la synchronisation des données ');
+    }
+  }
+
+  Future<void> sendInfosOnline(BuildContext context) async {
+    Dio dio = Dio();
+    final dbHelper = DatabaseHelper();
+
+    try {
+      List<Map<String, dynamic>> pdisinfos = await dbHelper.getNonSyncedInfos();
+      List<Map<String, dynamic>> user = await dbHelper.getDernierUser();
+      int? userId = user.first['userId'];
+
+      for (var pdisinfo in pdisinfos) {
+        var pdisinfoToSend = Map<String, dynamic>.from(pdisinfo);
+        print(pdisinfoToSend);
+
+        // Créer un FormData avec les champs de l'enfant
+        FormData formData = FormData.fromMap({
+          "localid": pdisinfo['localid'],
+          "pdisinfonenf": pdisinfo['nombreEnfant'],
+          "pdisinfotmen": pdisinfo['taillemen'],
+          "pdisinfolieuprov": pdisinfo['provenance'],
+          "pdisinfomotdep": pdisinfo['motif'],
+          "pdisinfonomjourdep": pdisinfo['nbjour'],
+          "idmenaccueil": pdisinfo['codeMenage'],
+          "u_id": userId,
+        });
+
+        // Envoi de la requête
+        final response = await dio.post(
+          'https://rece-api.etatcivilnordkivu.cd/api_rece_dep/pdisinfo/save?user=recedepv1&mdp=nk001api',
+          data: formData,
+        );
+        print(response.data);
+        if (response.statusCode == 200) {
+          await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
+          // print('personne synchronisé avec succès : ${pdisinfo['nbjour']}');
+          // print('${response.data}');
+          if (context.mounted) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Succès'),
+                  content: const Text('Données synchronisées avec succès'),
+                  actions: <Widget>[
+                    TextButton(
+                        child: const Text('OK'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                  ],
+                );
+              },
+            );
+          }
+        } else {
+          print(
+              'Erreur lors de la synchronisation de ${pdisinfo['nbjour']}: ${response.statusCode}, ${response.data}');
+        }
+      }
+    } catch (e) {
+      print('Erreur lors de la synchronisation des informations du pdis : $e');
     }
   }
 }

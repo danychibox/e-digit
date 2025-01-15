@@ -207,8 +207,4 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
-  Future<void> _saveEnfant() async {
-    // Obtenir les données du père, de la mère et du déclarant
-  }
 }

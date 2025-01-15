@@ -213,6 +213,11 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<Map<String, dynamic>>> getSyncedInfos() async {
+    final db = await database;
+    return await db.query('infos');
+  }
+
   Future<List<Map<String, dynamic>>> getNonSyncedSite() async {
     final db = await database;
     return await db.query(
@@ -417,9 +422,16 @@ class DatabaseHelper {
         columns: ['localid'], orderBy: 'localid DESC', limit: 1);
   }
 
+  Future<List<Map<String, dynamic>>> getDernierPersonneMat() async {
+    final db = await database;
+    return await db.query('personne',
+        columns: ['matricules'], orderBy: 'matricules DESC', limit: 1);
+  }
+
   Future<List<Map<String, dynamic>>> getDernierMenages() async {
     final db = await database;
-    return await db.query('menage', orderBy: 'localid DESC', limit: 1);
+    return await db.query('menage',
+        columns: ['localid'], orderBy: 'localid DESC', limit: 1);
   }
 
   Future<List<Map<String, dynamic>>> getDerniereSite() async {
@@ -510,5 +522,40 @@ class DatabaseHelper {
       // Aucun utilisateur trouvé
       return null;
     }
+  }
+
+  Future<List<Map<String, dynamic>>> countUnsyncedPersonne() async {
+    final db = await database;
+    return await db
+        .rawQuery('SELECT COUNT(*) as count FROM personne WHERE is_synced = 0');
+  }
+
+  Future<List<Map<String, dynamic>>> countSyncedPersonne() async {
+    final db = await database;
+    return await db
+        .rawQuery('SELECT COUNT(*) as count FROM personne WHERE is_synced = 1');
+  }
+
+  Future<List<Map<String, dynamic>>> getPersonneAndInfosByMenage(
+      int codeMenage) async {
+    final db = await database;
+    final result = await db.rawQuery('''
+    SELECT 
+      p.localid AS personneId,
+      p.nom AS nomPersonne,
+      p.postnom AS postnomPersonne,
+      p.prenom AS prenomPersonne,
+      p.sexe as sexePersonne,
+      i.localid AS infoId,
+      i.nombreEnfant,
+      i.nbjour,
+      i.taillemen,
+      i.motif,
+      i.provenance
+    FROM personne p
+    INNER JOIN infos i ON p.codeMenage = i.codeMenage
+    WHERE p.codeMenage = ?
+  ''', [codeMenage]);
+    return result;
   }
 }
