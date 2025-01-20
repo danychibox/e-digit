@@ -558,4 +558,22 @@ class DatabaseHelper {
   ''', [codeMenage]);
     return result;
   }
+
+  Future<int> countDataByToday() async {
+    final db = await database; // Obtenez l'instance de la base de données
+    final today = DateTime.now()
+        .toIso8601String()
+        .split('T')[0]; // Obtenez la date du jour au format 'YYYY-MM-DD'
+
+    final result = await db.rawQuery('''
+    SELECT COUNT(*) as total
+    FROM personne
+    WHERE DATE(date_inscri) = ?
+  ''', [today]);
+
+    if (result.isNotEmpty) {
+      return result.first['total'] as int;
+    }
+    return 0;
+  }
 }

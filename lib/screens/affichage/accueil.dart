@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:edigit/screens/affichage/menage.dart';
 import 'package:flutter/material.dart';
 import 'package:edigit/DatabaseHelper.dart';
-// import 'package:edigit/screens/affichage/EnfantStats.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:edigit/screens/affichage/MenageList.dart';
 import 'package:edigit/screens/affichage/enfantList1.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +24,7 @@ class _AccueilState extends State<Accueil> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   List<Map<String, dynamic>> count = [];
   int? countnonsync;
+  int? countday;
   int? countsync;
 
   @override
@@ -31,12 +32,20 @@ class _AccueilState extends State<Accueil> {
     super.initState();
     _loadUnsyncedPersonneCount();
     _loadsyncedPersonneCount();
+    _parjourData();
   }
 
   Future<void> _loadUnsyncedPersonneCount() async {
     count = await _dbHelper.countUnsyncedPersonne();
     setState(() {
       countnonsync = count.first['count'];
+    });
+  }
+
+  Future<void> _parjourData() async {
+    int countToday = await _dbHelper.countDataByToday();
+    setState(() {
+      countday = countToday;
     });
   }
 
@@ -66,7 +75,7 @@ class _AccueilState extends State<Accueil> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.upload),
+            icon: Icon(FontAwesomeIcons.cloudArrowUp),
             onPressed: () async {
               sendInfosOnline(context);
             },
@@ -151,13 +160,42 @@ class _AccueilState extends State<Accueil> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.download,
+                      Icons.battery_alert,
                       size: 40,
                       color: Colors.blue,
                     ),
                     SizedBox(width: 10), // Espacement entre l'icône et le texte
                     Text(
-                      'Données offline $countnonsync',
+                      'Enregistrements en attente $countnonsync',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(FontAwesomeIcons.shareFromSquare),
+                      onPressed: () {
+                        // Votre action ici
+                      },
+                    ),
+
+                    SizedBox(width: 10), // Espacement entre l'icône et le texte
+                    Text(
+                      'Données synchronisées $countsync',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -184,7 +222,7 @@ class _AccueilState extends State<Accueil> {
                     ),
                     SizedBox(width: 10), // Espacement entre l'icône et le texte
                     Text(
-                      'Données online $countsync',
+                      'Données en temps réel $countday',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
