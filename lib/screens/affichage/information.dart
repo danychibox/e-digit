@@ -439,9 +439,6 @@ class _FormInformationState extends State<FormInformation> {
       int? codemenage = menage.first['localid'];
       List<Map<String, dynamic>> respo = await _dbHelper.getDernierPersonne();
       int? codeRespo = respo.first['localid'];
-      List<Map<String, dynamic>> mat = await _dbHelper.getDernierPersonneMat();
-      int? pdisresmat = mat.first['pdisresmat'];
-
       await _dbHelper.insertInfos({
         'provenance': _provenanceController.text,
         'nombreEnfant': _compoController.text,
@@ -450,7 +447,6 @@ class _FormInformationState extends State<FormInformation> {
         'motif': _selectedMotifId,
         'taillemen': _tailleController.text,
         'codeMenage': codemenage,
-        'pdisresmat': pdisresmat,
         'respo': codeRespo,
       });
 

@@ -118,10 +118,10 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
       for (var enfant in enfants) {
         var enfantToSend = Map<String, dynamic>.from(enfant);
         print(enfantToSend);
-        String? sexe = "F";
-        if (enfant['sexe'] == "Masculin") {
-          sexe = "M";
-        }
+        // String? sexe = "F";
+        // if (enfant['sexe'] == "Masculin") {
+        //   sexe = "M";
+        // }
         // Créer un FormData avec les champs de l'enfant
         FormData formData = FormData.fromMap({
           "localid": enfant['localid'],
@@ -134,7 +134,7 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
           "pdisresqualite": enfant['relation'] ?? '',
           "pdisresnvul": enfant['vulenerabilite'] ?? '',
           "pdisresprof": enfant['profession'] ?? '',
-          "matricule": "NK0000$userId${enfant['localid']}${sexe}BBO",
+          // "matricule": "NK0000$userId${enfant['localid']}${sexe}BBO",
           "mena_code": enfant['codeMenage'] ?? '',
           "u_ref": userId ?? 0,
           "pdisresdatenr": enfant['date_inscri'] ?? '',
@@ -248,7 +248,6 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
         FormData formData = FormData.fromMap({
           "localid": pdisinfo['localid'],
           "pdisinfonenf": pdisinfo['nombreEnfant'],
-          "pdisresmat": pdisinfo['pdisresmat'],
           "pdisinfotmen": pdisinfo['taillemen'],
           "pdisinfolieuprov": pdisinfo['provenance'],
           "pdisinfomotdep": pdisinfo['motif'],
