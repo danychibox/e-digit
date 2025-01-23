@@ -150,85 +150,147 @@ class _AccueilState extends State<Accueil> {
             runSpacing: 20,
             children: [
               Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: Colors.blue, width: 2),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.battery_alert,
-                      size: 40,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(width: 10), // Espacement entre l'icône et le texte
-                    Text(
-                      'Enregistrements en attente $countnonsync',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade700,
-                      ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Centrer les éléments verticalement
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 5),
+                            Icon(
+                              Icons.storage,
+                              size: 20,
+                              color: Colors.red,
+                            ),
+                            Text(
+                              'Enregistrements en attente',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            width: 5), // Espacement entre l'icône et le texte
+                        Text(
+                          '$countnonsync',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: Colors.blue, width: 2),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      icon: Icon(FontAwesomeIcons.shareFromSquare),
-                      onPressed: () {
-                        // Votre action ici
-                      },
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Centrer les éléments verticalement
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(width: 5),
+                            Icon(
+                              Icons.storage,
+                              size: 20,
+                              color: Colors.orange,
+                            ),
+                            Text(
+                              'Données synchronisées',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          '$countsync',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue.shade700,
+                          ),
+                        ),
+                      ],
                     ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: Colors.blue, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 5),
+                    Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Centrer les éléments verticalement
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Espacement entre l'icône et le texte
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.storage,
+                                size: 20,
+                                color: Colors.green,
+                              ),
+                              Text(
+                                'Données en temps réel',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
 
-                    SizedBox(width: 10), // Espacement entre l'icône et le texte
-                    Text(
-                      'Données synchronisées $countsync',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue, width: 2),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.upload,
-                      size: 40,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(width: 10), // Espacement entre l'icône et le texte
-                    Text(
-                      'Données en temps réel $countday',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade700,
-                      ),
-                    ),
+                          Text(
+                            '$countday',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                        ]),
                   ],
                 ),
               ),
@@ -324,7 +386,7 @@ class _AccueilState extends State<Accueil> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 40.0, color: Colors.white),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Text(text),
           ],
         ),
@@ -1022,61 +1084,110 @@ class _AccueilState extends State<Accueil> {
     final dbHelper = DatabaseHelper();
 
     try {
+      // Afficher le dialogue de chargement
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Dialog(
+            backgroundColor: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 15),
+                Text(
+                  'Synchronisation en cours...',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      // Récupérer les enregistrements et l'utilisateur
       List<Map<String, dynamic>> pdisinfos = await dbHelper.getNonSyncedInfos();
       List<Map<String, dynamic>> user = await dbHelper.getDernierUser();
       int? userId = user.first['userId'];
 
+      // Boucle pour traiter chaque enregistrement
       for (var pdisinfo in pdisinfos) {
-        var pdisinfoToSend = Map<String, dynamic>.from(pdisinfo);
-        print(pdisinfoToSend);
+        try {
+          FormData formData = FormData.fromMap({
+            "localid": pdisinfo['localid'],
+            "pdisinfonenf": pdisinfo['nombreEnfant'],
+            "pdisinfotmen": pdisinfo['taillemen'],
+            "pdisinfolieuprov": pdisinfo['provenance'],
+            "pdisinfomotdep": pdisinfo['motif'],
+            "pdisinfonomjourdep": pdisinfo['nbjour'],
+            "idmenaccueil": pdisinfo['codeMenage'],
+            "u_id": userId,
+          });
 
-        // Créer un FormData avec les champs de l'enfant
-        FormData formData = FormData.fromMap({
-          "localid": pdisinfo['localid'],
-          "pdisinfonenf": pdisinfo['nombreEnfant'],
-          "pdisinfotmen": pdisinfo['taillemen'],
-          "pdisinfolieuprov": pdisinfo['provenance'],
-          "pdisinfomotdep": pdisinfo['motif'],
-          "pdisinfonomjourdep": pdisinfo['nbjour'],
-          "idmenaccueil": pdisinfo['codeMenage'],
-          "u_id": userId,
-        });
+          // Envoi de la requête
+          final response = await dio.post(
+            'https://rece-api.etatcivilnordkivu.cd/api_rece_dep/pdisinfo/save?user=recedepv1&mdp=nk001api',
+            data: formData,
+          );
 
-        // Envoi de la requête
-        final response = await dio.post(
-          'https://rece-api.etatcivilnordkivu.cd/api_rece_dep/pdisinfo/save?user=recedepv1&mdp=nk001api',
-          data: formData,
-        );
-        print(response.data);
-        if (response.statusCode == 200) {
-          await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
-          // print('personne synchronisé avec succès : ${pdisinfo['nbjour']}');
-          // print('${response.data}');
-          if (context.mounted) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Succès'),
-                  content: const Text('Données synchronisées avec succès'),
-                  actions: <Widget>[
-                    TextButton(
-                        child: const Text('OK'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }),
-                  ],
-                );
-              },
-            );
+          // Vérification du succès de la requête
+          if (response.statusCode == 200) {
+            await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
+          } else {
+            print(
+                'Erreur lors de la synchronisation : ${response.statusCode} - ${response.data}');
           }
-        } else {
+        } catch (e) {
           print(
-              'Erreur lors de la synchronisation de ${pdisinfo['nbjour']}: ${response.statusCode}, ${response.data}');
+              'Erreur lors de la synchronisation de ${pdisinfo['localid']}: $e');
         }
       }
+
+      // Fermer le dialogue de chargement
+      if (context.mounted) Navigator.of(context).pop();
+
+      // Afficher un message de succès
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Succès'),
+            content: const Text('Données synchronisées avec succès'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
-      print('Erreur lors de la synchronisation des informations du pdis : $e');
+      // Gestion des erreurs globales
+      if (context.mounted) Navigator.of(context).pop();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erreur'),
+            content: const Text(
+                'Une erreur est survenue lors de la synchronisation des données'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      print('Erreur globale lors de la synchronisation : $e');
     }
   }
 }

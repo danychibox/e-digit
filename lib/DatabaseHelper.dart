@@ -536,26 +536,16 @@ class DatabaseHelper {
         .rawQuery('SELECT COUNT(*) as count FROM personne WHERE is_synced = 1');
   }
 
-  Future<List<Map<String, dynamic>>> getPersonneAndInfosByMenage(
-      int codeMenage) async {
+  Future<List<Map<String, dynamic>>> getPersonneAndInfosByMenage() async {
     final db = await database;
     final result = await db.rawQuery('''
     SELECT 
       p.localid AS personneId,
-      p.nom AS nomPersonne,
-      p.postnom AS postnomPersonne,
-      p.prenom AS prenomPersonne,
-      p.sexe as sexePersonne,
-      i.localid AS infoId,
-      i.nombreEnfant,
-      i.nbjour,
-      i.taillemen,
-      i.motif,
-      i.provenance
+      p.sexe AS sexe,
+      i.localid AS infoId
     FROM personne p
-    INNER JOIN infos i ON p.codeMenage = i.codeMenage
-    WHERE p.codeMenage = ?
-  ''', [codeMenage]);
+    INNER JOIN infos i ON p.localid = i.respo
+  ''');
     return result;
   }
 

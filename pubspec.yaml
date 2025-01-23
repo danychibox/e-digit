@@ -51,6 +51,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+
+flutter_icons:
+  version: ^1.1.0
+  android: true
+  ios: true
+  image_path: "assets/icon/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -74,6 +81,7 @@ flutter:
   assets:
     - assets/certs/certificate.crt
     - assets/images/logo.png
+    - assets/icon/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

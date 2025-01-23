@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:edigit/constatnts.dart';
 import 'package:edigit/screens/welcome/MyHttpOverrides.dart';
 import 'package:edigit/screens/welcome/welcome_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

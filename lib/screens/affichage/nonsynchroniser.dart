@@ -50,61 +50,96 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
         },
       );
 
-      // Synchronisation des données
-      await sendRecOnline(context);
-      await sendMenageOnline(context);
-      await sendInfosOnline(context);
+      // Vérification et exécution des méthodes avec gestion des erreurs
+      try {
+        await sendRecOnline(context);
+        print('sendRecOnline exécuté avec succès.');
+      } catch (e) {
+        print('Erreur lors de sendRecOnline : $e');
+        if (context.mounted) {
+          await _showErrorDialog(context, 'Erreur lors de sendRecOnline : $e');
+        }
+      }
+
+      try {
+        await sendMenageOnline(context);
+        print('sendMenageOnline exécuté avec succès.');
+      } catch (e) {
+        print('Erreur lors de sendMenageOnline : $e');
+        if (context.mounted) {
+          await _showErrorDialog(
+              context, 'Erreur lors de sendMenageOnline : $e');
+        }
+      }
+
+      try {
+        await sendInfosOnline(context);
+        print('sendInfosOnline exécuté avec succès.');
+      } catch (e) {
+        print('Erreur lors de sendInfosOnline : $e');
+        if (context.mounted) {
+          await _showErrorDialog(
+              context, 'Erreur lors de sendInfosOnline : $e');
+        }
+      }
 
       // Fermer le loader si le contexte est valide
       if (context.mounted) Navigator.of(context).pop();
 
-      // Succès
+      // Succès global
       if (context.mounted) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Succès'),
-              content: const Text('Données synchronisées avec succès'),
-              actions: <Widget>[
-                TextButton(
-                    child: const Text('OK'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      setState(() {
-                        _unsyncedPersons = _dbHelper.getNonSyncedPersonnes();
-                      });
-                    }),
-              ],
-            );
-          },
-        );
-      }
-    } catch (e) {
-      // Fermer le loader en cas d'erreur
-      if (context.mounted) Navigator.of(context).pop();
-
-      // Afficher l'erreur
-      print('Erreur lors de la synchronisation : $e');
-
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Échec'),
-              content: Text('Erreur lors de la synchronisation : $e'),
+              content: const Text(
+                  'Toutes les données ont été synchronisées avec succès.'),
               actions: <Widget>[
                 TextButton(
                   child: const Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _unsyncedPersons = _dbHelper.getNonSyncedPersonnes();
+                    });
+                  },
                 ),
               ],
             );
           },
         );
       }
+    } catch (e) {
+      // Fermer le loader en cas d'erreur globale
+      if (context.mounted) Navigator.of(context).pop();
+
+      // Afficher une erreur globale
+      print('Erreur lors de la synchronisation globale : $e');
+      if (context.mounted) {
+        await _showErrorDialog(
+            context, 'Erreur globale lors de la synchronisation : $e');
+      }
     }
+  }
+
+// Méthode auxiliaire pour afficher une boîte de dialogue d'erreur
+  Future<void> _showErrorDialog(BuildContext context, String message) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Échec'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> sendRecOnline(BuildContext context) async {
@@ -226,21 +261,23 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
         var pdisinfoToSend = Map<String, dynamic>.from(pdisinfo);
         print(pdisinfoToSend);
         List<Map<String, dynamic>> xcode =
-            await _dbHelper.getPersonneAndInfosByMenage(pdisinfo['codeMenage']);
+            await _dbHelper.getPersonneAndInfosByMenage();
         String? enfantid;
         String? enfantsexe;
         if (xcode.isNotEmpty) {
           // Extraction des premières données
-          enfantid = xcode.first['personneId'];
-          enfantsexe = xcode.first['sexePersonne'];
+          enfantid = xcode.first['personneId'] as String?;
+          enfantsexe = xcode.first['sexe'] as String?;
 
           // Utilisation des données récupérées
           print('Enfant ID: $enfantid');
           print('Enfant Sexe: $enfantsexe');
         } else {
           // Gestion du cas où aucune donnée n'est trouvée
+          enfantid = '';
+          enfantsexe = '';
           print(
-              'Aucune donnée trouvée pour le codeMenage ${pdisinfo['codeMenage']}');
+              'Aucune donnée trouvée pour le codeMenage : ${pdisinfo['codeMenage']}');
         }
         // var enfantid = xcode.first['personneId'];
         // var enfantsexe = xcode.first['sexePersonne'];

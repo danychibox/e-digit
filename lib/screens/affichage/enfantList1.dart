@@ -92,6 +92,14 @@ class _Enfantlist1State extends State<Enfantlist1> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Genre: ${personne['sexe'] ?? ''}"),
+                        Text(
+                            "Lieu de naissance: ${personne['lieunais'] ?? ''}"),
+                      ],
+                    ),
                     // trailing: IconButton(
                     //   icon: Icon(Icons.send, color: Colors.blue),
                     //   onPressed: () {

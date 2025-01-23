@@ -95,84 +95,78 @@ class _MenageListState extends State<MenageList> {
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(child: Text('Aucune donnée offline'));
             } else {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: [
-                    DataColumn(label: Text('Nom')),
-                    DataColumn(label: Text('Post-nom')),
-                    DataColumn(label: Text('Prénom')),
-                    DataColumn(label: Text('Genre')),
-                    DataColumn(label: Text('Lieu de naissance')),
-                    DataColumn(label: Text('Date de naissance')),
-                    DataColumn(label: Text('action')),
-                  ],
-                  rows: _filteredEnfants.map((enfant) {
-                    return DataRow(
-                      color: MaterialStateProperty.all(
-                        _filteredEnfants.indexOf(enfant) % 2 == 0
-                            ? Colors.grey.shade200
-                            : Colors.white,
+              // Liste des données récupérées
+              final enfants = snapshot.data!;
+
+              return ListView.builder(
+                itemCount: enfants.length,
+                itemBuilder: (context, index) {
+                  final enfant = enfants[index];
+
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                    child: ListTile(
+                      tileColor: index % 2 == 0
+                          ? Colors.grey.shade200
+                          : Colors.white, // Couleur alternée
+                      title: Text(
+                        "${enfant['nom'] ?? ''} ${enfant['postnom'] ?? ''} ${enfant['prenom'] ?? ''}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      cells: [
-                        DataCell(Text(enfant['nom'] ?? '')),
-                        DataCell(Text(enfant['postnom'] ?? '')),
-                        DataCell(Text(enfant['prenom'] ?? '')),
-                        DataCell(Text(enfant['sexe'] ?? '')),
-                        DataCell(Text(enfant['lieunais'] ?? '')),
-                        DataCell(Text(enfant['datenaiss'] ?? '')),
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.update,
-                                    color:
-                                        const Color.fromARGB(255, 202, 151, 8)),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditPersonPage(
-                                          localId: enfant['localid']),
-                                    ),
-                                  );
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () async {
-                                  // Ajoutez ici la logique de suppression
-                                  bool? confirm =
-                                      await _showDeleteDialog(context);
-                                  if (confirm == true) {
-                                    await _dbHelper
-                                        .deletePersonne(enfant['localid']);
-                                    setState(() {
-                                      _enfants = _dbHelper.getPersonne0();
-                                      _enfants.then((data) {
-                                        _filteredEnfants = data;
-                                      });
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text('Supprimé avec succès')),
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Genre: ${enfant['sexe'] ?? ''}"),
+                          Text(
+                              "Lieu de naissance: ${enfant['lieunais'] ?? ''}"),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.update,
+                                color: const Color.fromARGB(255, 202, 151, 8)),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditPersonPage(
+                                      localId: enfant['localid']),
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              bool? confirm = await _showDeleteDialog(context);
+                              if (confirm == true) {
+                                await _dbHelper
+                                    .deletePersonne(enfant['localid']);
+                                setState(() {
+                                  _enfants = _dbHelper.getPersonne0();
+                                  _enfants.then((data) {
+                                    _filteredEnfants = data;
+                                  });
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Supprimé avec succès')),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             }
           },
         ),
+
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.push(
