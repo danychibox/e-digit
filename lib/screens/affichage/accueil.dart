@@ -57,6 +57,12 @@ class _AccueilState extends State<Accueil> {
     });
   }
 
+  Future<bool> isDataCallEmpty() async {
+    final dbHelper = DatabaseHelper();
+    int count = await dbHelper.getDataCallCount();
+    return count == 0; // Vérifie si la table est vide
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -75,10 +81,21 @@ class _AccueilState extends State<Accueil> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(FontAwesomeIcons.cloudArrowUp),
-            onPressed: () async {
-              sendInfosOnline(context);
+          FutureBuilder<bool>(
+            future: isDataCallEmpty(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(); // Affiche rien pendant le chargement
+              } else if (snapshot.hasData && snapshot.data == true) {
+                return IconButton(
+                  icon: Icon(FontAwesomeIcons.cloudArrowUp),
+                  onPressed: () async {
+                    sendInfosOnline(context);
+                  },
+                );
+              } else {
+                return SizedBox(); // Si la table n'est pas vide, on cache le bouton
+              }
             },
           ),
         ],
@@ -132,16 +149,16 @@ class _AccueilState extends State<Accueil> {
               title: Text('Synchroniser les utilisateurs'),
               onTap: () => syncUserFromApi(context),
             ),
-            ListTile(
-              leading: Icon(Icons.sync),
-              title: Text('PDIS INFORMATION'),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => FetchPdisInfo(),
-                ),
-              ),
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.sync),
+            //   title: Text('PDIS INFORMATION'),
+            //   onTap: () => Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => FetchPdisInfo(),
+            //     ),
+            //   ),
+            // ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Quitter l\'application'),
@@ -1146,6 +1163,10 @@ class _AccueilState extends State<Accueil> {
           // Vérification du succès de la requête
           if (response.statusCode == 200) {
             await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
+
+            await dbHelper.insertDatacall({
+              'libmotif': "ok",
+            });
           } else {
             print(
                 'Erreur lors de la synchronisation : ${response.statusCode} - ${response.data}');

@@ -158,6 +158,12 @@ class DatabaseHelper {
       )
     ''');
     await db.execute('''
+      CREATE TABLE datacall (
+      localid INTEGER PRIMARY KEY,
+      libmotif TEXT
+      )
+    ''');
+    await db.execute('''
       CREATE TABLE user (
       userId INTEGER PRIMARY KEY,
       username TEXT,
@@ -286,6 +292,11 @@ class DatabaseHelper {
   Future<int> insertPersonne(Map<String, dynamic> personne) async {
     final db = await database;
     return await db.insert('personne', personne);
+  }
+
+  Future<int> insertDatacall(Map<String, dynamic> datacall) async {
+    final db = await database;
+    return await db.insert('datacall', datacall);
   }
 
   Future<int> insertMotif(Map<String, dynamic> motif) async {
@@ -575,12 +586,12 @@ class DatabaseHelper {
     final db = await database;
     return await db.rawQuery('''
     SELECT 
-        personne.nom,
-        personne.postnom,
-        personne.prenom,
-        personne.provenance,
-        personne.vulenerabilite,
-        personne.pdisnvulabr
+        personne.nom AS nom,
+        personne.postnom AS postnom,
+        personne.prenom AS prenom,
+        infos.provenance AS provenance,
+        personne.vulenerabilite AS vulenerabilite ,
+        vulenerable.pdisnvulabr AS pdisnvulabr
     FROM 
         personne
     LEFT JOIN 
@@ -592,16 +603,23 @@ class DatabaseHelper {
     final db = await database;
     return await db.rawQuery('''
     SELECT 
-        personne.nom,
-        personne.postnom,
-        personne.prenom,
-        personne.provenance,
-        personne.vulenerabilite,
-        personne.pdisnvulabr
+        personne.nom AS nom,
+        personne.postnom AS postnom,
+        personne.prenom AS prenom,
+        infos.provenance AS provenance,
+        personne.vulenerabilite AS vulenerabilite ,
+        vulenerable.pdisnvulabr AS pdisnvulabr
     FROM 
         personne
     LEFT JOIN 
         infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE is_synced = 0;
   ''');
+  }
+
+  Future<int> getDataCallCount() async {
+    final db = await database;
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT COUNT(*) as count FROM datacall');
+    return result.isNotEmpty ? result.first['count'] as int : 0;
   }
 }
