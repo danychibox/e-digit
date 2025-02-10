@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:edigit/screens/affichage/fetchpdisinfo.dart';
 import 'package:edigit/screens/affichage/menage.dart';
 import 'package:flutter/material.dart';
 import 'package:edigit/DatabaseHelper.dart';
@@ -130,6 +131,16 @@ class _AccueilState extends State<Accueil> {
               leading: Icon(Icons.sync),
               title: Text('Synchroniser les utilisateurs'),
               onTap: () => syncUserFromApi(context),
+            ),
+            ListTile(
+              leading: Icon(Icons.sync),
+              title: Text('PDIS INFORMATION'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FetchPdisInfo(),
+                ),
+              ),
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),

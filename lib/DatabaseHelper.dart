@@ -314,6 +314,11 @@ class DatabaseHelper {
     return await db.query('personne');
   }
 
+  Future<List<Map<String, dynamic>>> getInfos() async {
+    final db = await database;
+    return await db.query('infos');
+  }
+
   Future<Map<String, dynamic>?> getPersonById(int id) async {
     final db = await database;
     final result =
@@ -538,7 +543,7 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getPersonneAndInfosByMenage() async {
     final db = await database;
-    final result = await db.rawQuery('''
+    return await db.rawQuery('''
     SELECT 
       p.localid AS personneId,
       p.sexe AS sexe,
@@ -546,7 +551,6 @@ class DatabaseHelper {
     FROM personne p
     INNER JOIN infos i ON p.localid = i.respo
   ''');
-    return result;
   }
 
   Future<int> countDataByToday() async {
@@ -565,5 +569,39 @@ class DatabaseHelper {
       return result.first['total'] as int;
     }
     return 0;
+  }
+
+  Future<List<Map<String, dynamic>>> getPersonDetailsSync() async {
+    final db = await database;
+    return await db.rawQuery('''
+    SELECT 
+        personne.nom,
+        personne.postnom,
+        personne.prenom,
+        personne.provenance,
+        personne.vulenerabilite,
+        personne.pdisnvulabr
+    FROM 
+        personne
+    LEFT JOIN 
+        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE is_synced = 1;
+  ''');
+  }
+
+  Future<List<Map<String, dynamic>>> getPersonDetailsNonSync() async {
+    final db = await database;
+    return await db.rawQuery('''
+    SELECT 
+        personne.nom,
+        personne.postnom,
+        personne.prenom,
+        personne.provenance,
+        personne.vulenerabilite,
+        personne.pdisnvulabr
+    FROM 
+        personne
+    LEFT JOIN 
+        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE is_synced = 0;
+  ''');
   }
 }

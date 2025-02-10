@@ -5,19 +5,19 @@ import 'package:edigit/Databasehelper.dart';
 import 'package:edigit/screens/affichage/accueil.dart';
 // import 'package:edigit/screens/affichage/visualisation.dart';
 
-class Enfantlist1 extends StatefulWidget {
+class FetchPdisInfo extends StatefulWidget {
   @override
-  _Enfantlist1State createState() => _Enfantlist1State();
+  _FetchPdisInfoState createState() => _FetchPdisInfoState();
 }
 
-class _Enfantlist1State extends State<Enfantlist1> {
+class _FetchPdisInfoState extends State<FetchPdisInfo> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   late Future<List<Map<String, dynamic>>> _personnes;
 
   @override
   void initState() {
     super.initState();
-    _personnes = _dbHelper.getPersonDetailsSync();
+    _personnes = _dbHelper.getInfos();
   }
 
   // Fonction pour envoyer les données en ligne
@@ -41,7 +41,7 @@ class _Enfantlist1State extends State<Enfantlist1> {
           },
         ),
         title: Text(
-          'LISTE DES RECENSES',
+          'LISTE DES INFORMATIONS ',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -78,7 +78,7 @@ class _Enfantlist1State extends State<Enfantlist1> {
                     leading: CircleAvatar(
                       backgroundColor: Color.fromARGB(255, 77, 68, 206),
                       child: Text(
-                        personne['nom'][0],
+                        personne['localid'][0],
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class _Enfantlist1State extends State<Enfantlist1> {
                       ),
                     ),
                     title: Text(
-                      '${personne['nom']} ${personne['postnom']} ${personne['prenom']}',
+                      'Provenance: ${personne['provenance']} code parent: ${personne['respo']} taille du ménage:${personne['taillemen']}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -95,24 +95,9 @@ class _Enfantlist1State extends State<Enfantlist1> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("nom vul: ${personne['pdisnvulabr'] ?? ''}"),
-                        Text("lieu d'origine: ${personne['provenance'] ?? ''}"),
+                        Text("statut: ${personne['is_synced'] ?? ''}"),
                       ],
                     ),
-                    // trailing: IconButton(
-                    //   icon: Icon(Icons.send, color: Colors.blue),
-                    //   onPressed: () {
-                    //     // _sendDataOnline(enfant);
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => EnfantDetailsScreen(
-                    //             personneId: personne[
-                    //                 'localid']), // Remplace 1 par l'ID de l'enfant souhaité
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
                   ),
                 );
               },

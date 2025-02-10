@@ -279,9 +279,6 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
           print(
               'Aucune donnée trouvée pour le codeMenage : ${pdisinfo['codeMenage']}');
         }
-        // var enfantid = xcode.first['personneId'];
-        // var enfantsexe = xcode.first['sexePersonne'];
-        // Créer un FormData avec les champs de l'enfant
         FormData formData = FormData.fromMap({
           "localid": pdisinfo['localid'],
           "pdisinfonenf": pdisinfo['nombreEnfant'],

@@ -21,7 +21,7 @@ class _MenageListState extends State<MenageList> {
   @override
   void initState() {
     super.initState();
-    _enfants = _dbHelper.getPersonne0();
+    _enfants = _dbHelper.getPersonDetailsNonSync();
     _enfants.then((data) {
       setState(() {
         _filteredEnfants = data;
@@ -116,9 +116,8 @@ class _MenageListState extends State<MenageList> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Genre: ${enfant['sexe'] ?? ''}"),
-                          Text(
-                              "Lieu de naissance: ${enfant['lieunais'] ?? ''}"),
+                          Text("nom vul: ${enfant['pdisnvulabr'] ?? ''}"),
+                          Text("lieu d'origine: ${enfant['provenance'] ?? ''}"),
                         ],
                       ),
                       trailing: Row(
