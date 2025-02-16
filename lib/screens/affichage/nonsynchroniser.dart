@@ -117,8 +117,7 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
       // Afficher une erreur globale
       print('Erreur lors de la synchronisation globale : $e');
       if (context.mounted) {
-        await _showErrorDialog(
-            context, 'Erreur globale lors de la synchronisation : $e');
+        await _showErrorDialog(context, 'Erreur connexion à internet : $e');
       }
     }
   }
@@ -250,64 +249,50 @@ class _UnsyncedPersonsPageState extends State<UnsyncedPersonsPage> {
 //declarant
   Future<void> sendInfosOnline(BuildContext context) async {
     Dio dio = Dio();
+    final dbHelper = DatabaseHelper();
 
     try {
-      List<Map<String, dynamic>> pdisinfos =
-          await _dbHelper.getNonSyncedInfos();
-      List<Map<String, dynamic>> user = await _dbHelper.getDernierUser();
+      // Récupérer les enregistrements et l'utilisateur
+      List<Map<String, dynamic>> pdisinfos = await dbHelper.getNonSyncedInfos();
+      List<Map<String, dynamic>> user = await dbHelper.getDernierUser();
       int? userId = user.first['userId'];
 
+      // Boucle pour traiter chaque enregistrement
       for (var pdisinfo in pdisinfos) {
-        var pdisinfoToSend = Map<String, dynamic>.from(pdisinfo);
-        print(pdisinfoToSend);
-        List<Map<String, dynamic>> xcode =
-            await _dbHelper.getPersonneAndInfosByMenage();
-        String? enfantid;
-        String? enfantsexe;
-        if (xcode.isNotEmpty) {
-          // Extraction des premières données
-          enfantid = xcode.first['personneId'] as String?;
-          enfantsexe = xcode.first['sexe'] as String?;
+        try {
+          FormData formData = FormData.fromMap({
+            "localid": pdisinfo['localid'],
+            "pdisinfonenf": pdisinfo['nombreEnfant'],
+            "pdisinfotmen": pdisinfo['taillemen'],
+            "pdisinfolieuprov": pdisinfo['provenance'],
+            "pdisinfomotdep": pdisinfo['motif'],
+            "pdisinfonomjourdep": pdisinfo['nbjour'],
+            "idmenaccueil": pdisinfo['codeMenage'],
+            "respo": pdisinfo['respo'],
+            "u_id": userId,
+          });
 
-          // Utilisation des données récupérées
-          print('Enfant ID: $enfantid');
-          print('Enfant Sexe: $enfantsexe');
-        } else {
-          // Gestion du cas où aucune donnée n'est trouvée
-          enfantid = '';
-          enfantsexe = '';
-          print(
-              'Aucune donnée trouvée pour le codeMenage : ${pdisinfo['codeMenage']}');
-        }
-        FormData formData = FormData.fromMap({
-          "localid": pdisinfo['localid'],
-          "pdisinfonenf": pdisinfo['nombreEnfant'],
-          "pdisinfotmen": pdisinfo['taillemen'],
-          "pdisinfolieuprov": pdisinfo['provenance'],
-          "pdisinfomotdep": pdisinfo['motif'],
-          "pdisinfonomjourdep": pdisinfo['nbjour'],
-          "idmenaccueil": pdisinfo['codeMenage'],
-          "matriculepdis": "NK0000$userId$enfantid${enfantsexe}BBO",
-          "u_id": userId,
-        });
+          // Envoi de la requête
+          final response = await dio.post(
+            'https://rece-api.etatcivilnordkivu.cd/api_rece_dep/pdisinfo/save?user=recedepv1&mdp=nk001api',
+            data: formData,
+          );
 
-        // Envoi de la requête
-        final response = await dio.post(
-          'https://rece-api.etatcivilnordkivu.cd/api_rece_dep/pdisinfo/save?user=recedepv1&mdp=nk001api',
-          data: formData,
-        );
-        print(response.data);
-        if (response.statusCode == 200) {
-          await _dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
-          print('personne synchronisé avec succès : ${pdisinfo['nbjour']}');
-          print('${response.data}');
-        } else {
-          print(
-              'Erreur lors de la synchronisation de ${pdisinfo['nbjour']}: ${response.statusCode}, ${response.data}');
+          // Vérification du succès de la requête
+          if (response.statusCode == 200) {
+            await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
+          } else {
+            print('erreur connexion à internet');
+          }
+        } catch (e) {
+          print('erreur connexion à internet');
         }
       }
+
+      // Afficher un message de succès
     } catch (e) {
-      print('Erreur lors de la synchronisation des informations du pdis : $e');
+      // Gestion des erreurs globales
+      print('Erreur globale lors de la synchronisation : $e');
     }
   }
 

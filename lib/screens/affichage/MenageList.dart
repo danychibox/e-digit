@@ -116,8 +116,8 @@ class _MenageListState extends State<MenageList> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("nom vul: ${enfant['pdisnvulabr'] ?? ''}"),
-                          Text("lieu d'origine: ${enfant['provenance'] ?? ''}"),
+                          Text("Vulnérabilité: ${enfant['pdisnvulabr'] ?? ''}"),
+                          Text("Lieu d'origine: ${enfant['provenance'] ?? ''}"),
                         ],
                       ),
                       trailing: Row(

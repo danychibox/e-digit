@@ -294,9 +294,9 @@ class DatabaseHelper {
     return await db.insert('personne', personne);
   }
 
-  Future<int> insertDatacall(Map<String, dynamic> datacall) async {
+  Future<int> insertDatacall(Map<String, dynamic> data) async {
     final db = await database;
-    return await db.insert('datacall', datacall);
+    return await db.insert('datacall', data);
   }
 
   Future<int> insertMotif(Map<String, dynamic> motif) async {
@@ -556,11 +556,11 @@ class DatabaseHelper {
     final db = await database;
     return await db.rawQuery('''
     SELECT 
-      p.localid AS personneId,
-      p.sexe AS sexe,
-      i.localid AS infoId
-    FROM personne p
-    INNER JOIN infos i ON p.localid = i.respo
+      personne.localid AS personneId,
+      personne.sexe AS sexe,
+      infos.localid AS infoId
+    FROM personne
+    INNER JOIN menage ON personne.codeMenage=menage.localid INNER JOIN infos ON personne.codeMenage = info.codeMenage
   ''');
   }
 
@@ -595,7 +595,7 @@ class DatabaseHelper {
     FROM 
         personne
     LEFT JOIN 
-        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE is_synced = 1;
+        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE personne.is_synced = 1;
   ''');
   }
 
@@ -612,7 +612,7 @@ class DatabaseHelper {
     FROM 
         personne
     LEFT JOIN 
-        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE is_synced = 0;
+        infos ON personne.codeMenage = infos.codeMenage LEFT JOIN vulenerable ON personne.vulenerabilite = vulenerable.localid WHERE personne.is_synced = 0;
   ''');
   }
 

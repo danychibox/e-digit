@@ -95,8 +95,8 @@ class _Enfantlist1State extends State<Enfantlist1> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("nom vul: ${personne['pdisnvulabr'] ?? ''}"),
-                        Text("lieu d'origine: ${personne['provenance'] ?? ''}"),
+                        Text("Vulnérabilité: ${personne['pdisnvulabr'] ?? ''}"),
+                        Text("Lieu d'origine: ${personne['provenance'] ?? ''}"),
                       ],
                     ),
                     // trailing: IconButton(

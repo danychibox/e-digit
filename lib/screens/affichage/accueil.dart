@@ -149,16 +149,6 @@ class _AccueilState extends State<Accueil> {
               title: Text('Synchroniser les utilisateurs'),
               onTap: () => syncUserFromApi(context),
             ),
-            // ListTile(
-            //   leading: Icon(Icons.sync),
-            //   title: Text('PDIS INFORMATION'),
-            //   onTap: () => Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => FetchPdisInfo(),
-            //     ),
-            //   ),
-            // ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Quitter l\'application'),
@@ -173,218 +163,97 @@ class _AccueilState extends State<Accueil> {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Center(
-          child: Wrap(
-            spacing: 20,
-            runSpacing: 20,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, // Centre verticalement
+            crossAxisAlignment:
+                CrossAxisAlignment.center, // Centre horizontalement
             children: [
-              Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.blue, width: 2),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Centrer les éléments verticalement
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(width: 5),
-                            Icon(
-                              Icons.storage,
-                              size: 20,
-                              color: Colors.red,
-                            ),
-                            Text(
-                              'Enregistrements en attente',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            width: 5), // Espacement entre l'icône et le texte
-                        Text(
-                          '$countnonsync',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              Wrap(
+                alignment:
+                    WrapAlignment.center, // Centre les éléments horizontalement
+                spacing: 20,
+                runSpacing: 20,
+                children: [
+                  _buildStatContainer(
+                      Icons.storage,
+                      "Enregistrements en attente",
+                      countnonsync ?? 0,
+                      Colors.red),
+                  _buildStatContainer(Icons.storage, "Données synchronisées",
+                      countsync ?? 0, Colors.orange),
+                  _buildStatContainer(Icons.storage, "Données en temps réel",
+                      countday ?? 0, Colors.green),
+                ],
               ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.blue, width: 2),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Centrer les éléments verticalement
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(width: 5),
-                            Icon(
-                              Icons.storage,
-                              size: 20,
-                              color: Colors.orange,
-                            ),
-                            Text(
-                              'Données synchronisées',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue.shade700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          '$countsync',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue.shade700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.blue, width: 2),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(width: 5),
-                    Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment
-                            .center, // Centrer les éléments verticalement
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Espacement entre l'icône et le texte
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.storage,
-                                size: 20,
-                                color: Colors.green,
-                              ),
-                              Text(
-                                'Données en temps réel',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue.shade700,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Text(
-                            '$countday',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue.shade700,
-                            ),
-                          ),
-                        ]),
-                  ],
-                ),
-              ),
-              _buildSquareButton(
-                context,
-                'Ajouter',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FormMenage(),
-                    ),
-                  );
-                },
-                Icons.add,
-                screenWidth * 0.4, // Adapté à la largeur de l’écran
-                screenHeight * 0.2,
-              ),
-              _buildSquareButton(
-                context,
-                'Données enregistrées',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MenageList(),
-                    ),
-                  );
-                },
-                Icons.people,
-                screenWidth * 0.4,
-                screenHeight * 0.2,
-              ),
-              _buildSquareButton(
-                context,
-                'Données en ligne',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Enfantlist1(),
-                    ),
-                  );
-                },
-                Icons.list,
-                screenWidth * 0.4,
-                screenHeight * 0.2,
-              ),
-              _buildSquareButton(
-                context,
-                'Synchronisation',
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ),
-                  );
-                },
-                Icons.sync_alt_rounded,
-                screenWidth * 0.4,
-                screenHeight * 0.2,
+              const SizedBox(height: 30), // Espacement entre stats et boutons
+              Wrap(
+                alignment:
+                    WrapAlignment.center, // Centre les boutons horizontalement
+                spacing: 20,
+                runSpacing: 20,
+                children: [
+                  _buildSquareButton(context, 'Ajouter', () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => FormMenage()));
+                  }, Icons.add, screenWidth * 0.4, screenHeight * 0.2),
+                  _buildSquareButton(context, 'Données enregistrées', () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MenageList()));
+                  }, Icons.people, screenWidth * 0.4, screenHeight * 0.2),
+                  _buildSquareButton(context, 'Données en ligne', () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Enfantlist1()));
+                  }, Icons.list, screenWidth * 0.4, screenHeight * 0.2),
+                  _buildSquareButton(context, 'Synchronisation', () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Login()));
+                  }, Icons.sync_alt_rounded, screenWidth * 0.4,
+                      screenHeight * 0.2),
+                ],
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatContainer(
+      IconData icon, String title, int count, Color iconColor) {
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.blue, width: 2),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: iconColor),
+              SizedBox(width: 5),
+              Text(
+                title,
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade700),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          Text(
+            '$count',
+            style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue.shade700),
+          ),
+        ],
       ),
     );
   }
@@ -1090,7 +959,7 @@ class _AccueilState extends State<Accueil> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Échec'),
-            content: Text('Erreur lors de la synchronisation des données '),
+            content: Text('Erreur: connexion à internet '),
             actions: <Widget>[
               TextButton(
                 child: Text('OK'),
@@ -1151,6 +1020,7 @@ class _AccueilState extends State<Accueil> {
             "pdisinfomotdep": pdisinfo['motif'],
             "pdisinfonomjourdep": pdisinfo['nbjour'],
             "idmenaccueil": pdisinfo['codeMenage'],
+            "respo": pdisinfo['respo'],
             "u_id": userId,
           });
 
@@ -1163,17 +1033,15 @@ class _AccueilState extends State<Accueil> {
           // Vérification du succès de la requête
           if (response.statusCode == 200) {
             await dbHelper.updateInfoSyncedStatus(pdisinfo['localid']);
-
+            String? libmotif = 'ok';
             await dbHelper.insertDatacall({
-              'libmotif': "ok",
+              'libmotif': libmotif,
             });
           } else {
-            print(
-                'Erreur lors de la synchronisation : ${response.statusCode} - ${response.data}');
+            print('erreur connexion à internet');
           }
         } catch (e) {
-          print(
-              'Erreur lors de la synchronisation de ${pdisinfo['localid']}: $e');
+          print('erreur connexion à internet');
         }
       }
 
@@ -1186,7 +1054,7 @@ class _AccueilState extends State<Accueil> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Succès'),
-            content: const Text('Données synchronisées avec succès'),
+            content: const Text(' synchronisées avec succès'),
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
@@ -1206,8 +1074,7 @@ class _AccueilState extends State<Accueil> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Erreur'),
-            content: const Text(
-                'Une erreur est survenue lors de la synchronisation des données'),
+            content: const Text('aucunne connexion à internet'),
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
